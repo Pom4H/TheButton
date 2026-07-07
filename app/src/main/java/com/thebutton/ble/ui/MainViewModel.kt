@@ -16,6 +16,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         bleClient.startConnection()
     }
 
+    fun onPermissionsDenied() {
+        bleClient.showPermissionsDenied()
+    }
+
+    fun onBluetoothDisabled() {
+        bleClient.showBluetoothRequired()
+    }
+
     fun retryConnection() {
         bleClient.retryConnection()
     }
@@ -25,7 +33,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        bleClient.disconnect()
+        bleClient.release()
         super.onCleared()
     }
 }

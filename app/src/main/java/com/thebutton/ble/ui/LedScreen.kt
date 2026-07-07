@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,37 +49,39 @@ fun LedScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(24.dp),
+                .padding(horizontal = 32.dp, vertical = 24.dp)
+                .widthIn(max = 400.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(
-                text = "Статус: ${uiState.statusText}",
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-            )
+            InfoRow(label = "Статус", value = uiState.statusText)
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Text(
-                text = ledStateText(uiState.ledOn),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-            )
+            InfoRow(label = "Светодиод", value = ledStateText(uiState.ledOn))
 
-            Spacer(modifier = Modifier.height(32.dp))
+            uiState.deviceName?.let { name ->
+                Spacer(modifier = Modifier.height(12.dp))
+                InfoRow(label = "Устройство", value = name)
+            }
+
+            Spacer(modifier = Modifier.height(36.dp))
 
             Button(
                 onClick = onToggleLed,
                 enabled = uiState.isToggleEnabled,
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = toggleButtonText(uiState.ledOn))
             }
 
             if (uiState.showRetryButton) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Button(onClick = onRetryConnection) {
+                OutlinedButton(
+                    onClick = onRetryConnection,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     Text(text = "Повторить подключение")
                 }
             }
@@ -84,10 +89,28 @@ fun LedScreenContent(
     }
 }
 
+@Composable
+private fun InfoRow(label: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
 private fun ledStateText(ledOn: Boolean?): String = when (ledOn) {
-    true -> "Светодиод: включён"
-    false -> "Светодиод: выключен"
-    null -> "Светодиод: неизвестно"
+    true -> "Включён"
+    false -> "Выключен"
+    null -> "Неизвестно"
 }
 
 private fun toggleButtonText(ledOn: Boolean?): String = when (ledOn) {

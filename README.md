@@ -1,12 +1,14 @@
 # TheButton
 
-Android-приложение (Kotlin + Jetpack Compose, minSdk 33) для управления светодиодом BLE-устройства `BUMBLE--FFFFFFFF` через characteristic `0000fff4-0000-1000-8000-00805f9b34fb` (READ / WRITE REQUEST).
+Android-приложение (Kotlin + Jetpack Compose, minSdk 33) для управления светодиодом BLE-устройства `BUMBLE- -FFFFFFFF` (PB-03F / PHY6252).
 
-При старте запрашивает `BLUETOOTH_SCAN` и `BLUETOOTH_CONNECT`, находит устройство, подключается и читает состояние светодиода. Кнопка «Включить»/«Выключить» пишет `1`/`0`; при потере соединения доступна кнопка «Повторить подключение».
+- Сервис: `0000fff0-0000-1000-8000-00805f9b34fb`
+- Characteristic: `0000fff4-0000-1000-8000-00805f9b34fb` (READ / WRITE REQUEST)
+- Значения: ASCII `'0'` / `'1'` (как в BLE Scanner на iOS)
+
+При старте запрашивает разрешения Bluetooth и location (нужно для сканирования iBeacon-рекламы на Samsung), находит устройство, сопрягается и подключается. Кнопка «Включить»/«Выключить» переключает светодиод.
 
 ## Сборка и запуск
-
-Откройте проект в Android Studio и запустите конфигурацию `app` на телефоне с BLE (эмулятор к реальному устройству не подключится), либо:
 
 ```bash
 ./gradlew installDebug
@@ -18,5 +20,5 @@ adb shell am start -n com.thebutton.ble/.MainActivity
 ## Структура
 
 - `MainActivity.kt` — permissions и запуск UI
-- `ble/BleClient.kt` — scan, GATT connect, чтение/запись characteristic
+- `ble/BleClient.kt` — scan, bonding, GATT connect, чтение/запись characteristic
 - `ui/` — Compose-экран, ViewModel, тема

@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity() {
     ) { results ->
         if (results.values.all { it }) {
             ensureBluetoothEnabledAndConnect()
+        } else {
+            viewModel.onPermissionsDenied()
         }
     }
 
@@ -35,6 +37,8 @@ class MainActivity : ComponentActivity() {
     ) {
         if (isBluetoothEnabled()) {
             viewModel.startConnection()
+        } else {
+            viewModel.onBluetoothDisabled()
         }
     }
 
@@ -83,6 +87,7 @@ class MainActivity : ComponentActivity() {
         private val REQUIRED_PERMISSIONS = listOf(
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.ACCESS_FINE_LOCATION,
         )
     }
 }
